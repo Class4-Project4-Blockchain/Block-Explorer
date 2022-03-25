@@ -3,7 +3,7 @@ require('dotenv').config({ path: __dirname + '/.env' });
 
 const dbConf = {
     host: process.env.HOST,
-    user: process.env.USER,
+    user: process.env.USERS,
     password: process.env.PASSWORD,
     database: process.env.DB,
     port: process.env.PORT,
