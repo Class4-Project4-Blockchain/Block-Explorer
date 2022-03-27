@@ -1,7 +1,6 @@
 const getConn = require("../utils/db");
-// const bcrypt = require("bcryptjs");
-//SELECT MAX(height) FROM getblock;
-exportts.getBlcokCheck = () => {
+
+exports.blockData = () => {
   return new Promise((resolve, reject) => {
     getConn((conn) => {
       try {
@@ -11,7 +10,7 @@ exportts.getBlcokCheck = () => {
         });
         conn.release();
       } catch (err) {
-        console.err(err);
+        console.error(err);
       }
     });
   });

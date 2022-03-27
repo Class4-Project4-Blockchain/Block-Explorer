@@ -1,15 +1,21 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const router = require('./routes/routes');
+const mainPage = require('./routes');
+const getBlockData = require('./routes/getblockdata');
+const getBlockCount = require('./routes/getblockcount');
+const getBlockHash = require('./routes/getblockhash');
 
-app.set('view engine', 'pug');
-app.set('views', './views');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));
 
+app.set('view engine', 'pug');
+app.set('views', './views');
 
-app.use('/', router);
+app.use('/', mainPage);
+app.use('/getblockdata', getBlockData);
+app.use('/getblockcount', getBlockCount);
+app.use('/getblockhash', getBlockHash);
 
 const host = 'localhost';
 const port = 3000;
