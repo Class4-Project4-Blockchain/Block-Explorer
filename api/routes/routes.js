@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const ctrl = require('../controllers/controllers');
-const rpc = require('../rpc/getRpcBlock');
 
-// router.get('/', ctrl.Api.getblock);
-router.post('/test', rpc);
+router.get('/', ctrl.Api.getblock);
+router.get('/getblockcount', ctrl.Api.getblockcount);
+router.get('/getblockhash', (req, res) => res.render('getblockhash'));
+router.post('/getblockhash_result', ctrl.Api.getblockhash)
 
 module.exports = router;
