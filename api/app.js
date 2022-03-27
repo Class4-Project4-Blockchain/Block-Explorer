@@ -3,8 +3,11 @@ const app = express();
 const bodyParser = require('body-parser');
 const router = require('./routes/routes');
 
+app.set('view engine', 'pug');
+app.set('views', './views');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));
+
 
 app.use('/', router);
 

@@ -11,7 +11,6 @@ const dbConf = {
 }
 
 const con = mysql.createPool(dbConf);
-console.log(process.env.HOST);
 
 const getConn = function(callback) {
     con.getConnection((err, connection) => {
