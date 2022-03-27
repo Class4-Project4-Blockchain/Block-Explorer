@@ -1,6 +1,6 @@
 const getConn = require("../utils/db");
 
-exports.addBlockHash = (
+exports.addBlock = (
   height,
   blockhash,
   merkleroot,
@@ -14,7 +14,7 @@ exports.addBlockHash = (
       try {
         let sQuery = `INSERT INTO getblock 
                     (height, blockhash, merkleroot, blocktime, nonce, previousblockhash, nextblockhash )
-                    VALUES (${height}, ${blockhash}, ${merkleroot}, ${blocktime}, ${nonce}, ${previousblockhash},${nextblockhash});`;
+                    VALUES (${height}, ${blockhash}, ${merkleroot}, ${blocktime}, ${nonce}, ${previousblockhash}, ${nextblockhash});`;
         conn.query(sQuery, (err, result, fields) => {
           resolve(result);
         });
