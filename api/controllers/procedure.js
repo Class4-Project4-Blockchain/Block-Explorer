@@ -11,37 +11,42 @@ const ID = "Bonocoin";
 const headers = { "content-type": "text/plain;" };
 
 module.exports = {
-  getBlockData:{
-    blockData: async () => {
-      let result = await blockDao.blockData();
-      return result;
+  getBlockDao: {
+    blockcheck: (req, res) => {
+      (() => {
+        let dataString = `{"jsonrpc":"1.0","id":"${ID}","method":"getblockcount","params":[]}`;
+        let options = {
+          url: `http://${USER}:${PASS}@${URL}:${PORT}/`,
+          method: "POST",
+          headers: headers,
+          body: dataString,
+        };
+
+        callback = (error, response, body) => {
+          if (!error && response.statusCode == 200) {
+            let blockcountDm = JSON.parse(body);
+            console.log("여기는?", blockcountDm);
+            
+            let getblockcount;
+            
+            (async () => {
+              let dao = [] = await blockDao.blockData();
+              getblockcount = dao[0]['MAX(height)']; // ★ 결정타
+              console.log(getblockcount);
+            })();
+
+            for (var i = 0; i<2; i++) {
+              console.log("test", i);
+            }
+
+          } else {
+            console.error("getblock's Error => ", error);
+          }
+
+        };
+        request(options, callback);
+      })(); // ★ 즉시 실행 함수 (Immediately-invoked function expression)
     },
-
-    daemon: async () => {
-      let dataString = `{"jsonrpc":"1.0","id":"${ID}","method":"getblockcount","params":[]}`;
-      let options = {
-        url: `http://${USER}:${PASS}@${URL}:${PORT}/`,
-        method: "POST",
-        headers: headers,
-        body: dataString,
-      };
-
-      callback = (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-          const data = JSON.parse(body);
-          console.log(data);
-          return data;
-        } else {
-          console.error("getblockhash's Error => ", error);
-        }
-      };
-
-      request(options, callback);
-    },
-
-    addBlock: async (req, res) => {
-      let result = await addBlockDao.addBlock();
-    }
   },
 
   getBlockCount: {
@@ -66,7 +71,7 @@ module.exports = {
       };
 
       request(options, callback);
-    }
+    },
   },
 
   getBlockHash: {
@@ -84,7 +89,7 @@ module.exports = {
           const data = JSON.parse(body);
           console.log(data);
           res.render("getblockhash_result", {
-            blockinfo: data.result
+            blockinfo: data.result,
           });
         } else {
           console.error("getblockhash's Error => ", error);
@@ -92,7 +97,7 @@ module.exports = {
       };
 
       request(options, callback);
-    }
+    },
   },
 };
 
