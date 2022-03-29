@@ -1,5 +1,6 @@
 const readHeightDao = require("../models/readHeightDao");
 const addHeightDao = require("../models/addHeightDao");
+const addBlockDao = require("../models/addBlockDao");
 const request = require("request");
 require("dotenv").config({ path: __dirname + "/.env" });
 
@@ -10,17 +11,22 @@ const URL = process.env.RPC_URL;
 const ID = "Bonocoin";
 const headers = { "content-type": "text/plain;" };
 
+const rpcOptions = (method, params) => {
+  let dataString = `{"jsonrpc":"1.0","id":"${ID}","method":"${method}","params":[${params}]}`
+  let options = {
+    url: `http://${USER}:${PASS}@${URL}:${PORT}/`,
+    method: "POST",
+    headers: headers,
+    body: dataString,
+  };
+  return options;
+};
+
 module.exports = {
   getBlockDao: {
     blockcheck: (req, res) => {
       (() => {
-        let dataString = `{"jsonrpc":"1.0","id":"${ID}","method":"getblockcount","params":[]}`;
-        let options = {
-          url: `http://${USER}:${PASS}@${URL}:${PORT}/`,
-          method: "POST",
-          headers: headers,
-          body: dataString,
-        };
+        let options = rpcOptions('getblockcount', '');
 
         callback = (error, response, body) => {
           if (!error && response.statusCode == 200) {
@@ -35,37 +41,28 @@ module.exports = {
               console.log("최근 db에 저장된 값", getblockcount);
 
               if (blockcountDm.result == getblockcount) {
-                return console.log("최신 데이터입니다");
+                return console.log("There is no data updated");
               } else {
-                let i = getblockcount + 1; // 초기값 i = 0
+                // let i = getblockcount + 1; // ★ 왜 이렇게하면 안되지????????
 
-                for (i; i <= blockcountDm.result; i++) {
-                  (() => {
-                    let dataString = `{"jsonrpc":"1.0","id":"${ID}","method":"getblockhash","params":[${i}]}`;
-                    let options_2 = {
-                      url: `http://${USER}:${PASS}@${URL}:${PORT}/`,
-                      method: "POST",
-                      headers: headers,
-                      body: dataString,
-                    };
-                    
-                    callback_2 = (error, response, body) => {
-                      if (!error && response.statusCode == 200) {
-                        let result = JSON.parse(body);
-                        (async () => {
-                          await addHeightDao.addHeight(i, result.result);
-                        })();
-                      } else { console.error("addHeightDao's Error", error) };
-                    };
+                for (let i = getblockcount + 1; i <= blockcountDm.result; i++) {
+                  let options_2 = rpcOptions('getblockhash', i);
+                  
+                  callback_2 = (error, response, body) => {
+                    if (!error && response.statusCode == 200) {
+                      let result = JSON.parse(body);
+                      (async () => {
+                        await addHeightDao.addHeight(i, result.result);
+                      })();
+                      
+                      
 
-                    request(options_2, callback_2);
-                  })();
-  
+                    } else { console.error("addHeightDao's Error", error) };
+                  };
+
+                  request(options_2, callback_2);
                 }
-                i = 0;
-                console.log("이거냐????????", i);
               }
-
             })();
 
           } else {
@@ -128,7 +125,23 @@ module.exports = {
       request(options, callback);
     },
   },
+
+
+  rpcOptionsTest: {
+    test: (req, res) => {
+      let options = rpcOptions('getblockcount', '');
+      callback = (error, response, body) => {
+        if (!error && response.statusCode == 200) {
+          const data = JSON.parse(body);
+          console.log(data);
+        } else {
+          console.error("test's Error => ", error);
+        }
+      };
+
+      request(options, callback);
+    }
+  }
 };
 
 // AWS : curl --user whkwon:1234 --data-binary '{"jsonrpc": "1.0", "method":"getblockcount", "params": [] }' -H 'content-type: text/plain;' http://3.35.141.239:9990/
-// 구름: curl --user whkwon:1234 --data-binary '{"jsonrpc": "1.0", "method":"getblockcount", "params": [] }' -H 'content-type: text/plain;' http://3.35.49.169:52677/
