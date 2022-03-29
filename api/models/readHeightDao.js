@@ -1,10 +1,10 @@
 const getConn = require("../utils/db");
 
-exports.blockData = () => {
+exports.readHeight = () => {
   return new Promise((resolve, reject) => {
     getConn((conn) => {
       try {
-        let sQuery = `SELECT MAX(height) FROM getblock`;
+        let sQuery = `SELECT MAX(height) FROM getblockhash`;
         conn.query(sQuery, (err, result) => {
           resolve(result);
         });

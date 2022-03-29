@@ -1,5 +1,5 @@
-const blockDao = require("../models/blockDao");
-const addBlockDao = require("../models/addBlockDao");
+const readHeightDao = require("../models/readHeightDao");
+const addHeightDao = require("../models/addHeightDao");
 const request = require("request");
 require("dotenv").config({ path: __dirname + "/.env" });
 
@@ -25,25 +25,54 @@ module.exports = {
         callback = (error, response, body) => {
           if (!error && response.statusCode == 200) {
             let blockcountDm = JSON.parse(body);
-            console.log("여기는?", blockcountDm);
-            
-            let getblockcount;
-            
-            (async () => {
-              let dao = [] = await blockDao.blockData();
-              getblockcount = dao[0]['MAX(height)']; // ★ 결정타
-              console.log(getblockcount);
-            })();
+            console.log("데몬 값", blockcountDm.result);
 
-            for (var i = 0; i<2; i++) {
-              console.log("test", i);
-            }
+            let getblockcount;
+
+            (async () => {
+              let dao = ([] = await readHeightDao.readHeight());
+              getblockcount = dao[0]["MAX(height)"]; // ★ 결정타
+              console.log("최근 db에 저장된 값", getblockcount);
+
+              if (blockcountDm.result == getblockcount) {
+                return console.log("최신 데이터입니다");
+              } else {
+                let i = getblockcount + 1; // 초기값 i = 0
+
+                for (i; i <= blockcountDm.result; i++) {
+                  (() => {
+                    let dataString = `{"jsonrpc":"1.0","id":"${ID}","method":"getblockhash","params":[${i}]}`;
+                    let options_2 = {
+                      url: `http://${USER}:${PASS}@${URL}:${PORT}/`,
+                      method: "POST",
+                      headers: headers,
+                      body: dataString,
+                    };
+                    
+                    callback_2 = (error, response, body) => {
+                      if (!error && response.statusCode == 200) {
+                        let result = JSON.parse(body);
+                        (async () => {
+                          await addHeightDao.addHeight(i, result.result);
+                        })();
+                      } else { console.error("addHeightDao's Error", error) };
+                    };
+
+                    request(options_2, callback_2);
+                  })();
+  
+                }
+                i = 0;
+                console.log("이거냐????????", i);
+              }
+
+            })();
 
           } else {
             console.error("getblock's Error => ", error);
           }
-
         };
+
         request(options, callback);
       })(); // ★ 즉시 실행 함수 (Immediately-invoked function expression)
     },
