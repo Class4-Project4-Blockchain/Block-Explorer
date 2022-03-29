@@ -40,22 +40,41 @@ module.exports = {
               getblockcount = dao[0]["MAX(height)"]; // ★ 결정타
               console.log("최근 db에 저장된 값", getblockcount);
 
-              if (blockcountDm.result == getblockcount) {
+              // addHeightDao
+              if(blockcountDm.result == getblockcount) {
                 return console.log("There is no data updated");
               } else {
                 // let i = getblockcount + 1; // ★ 왜 이렇게하면 안되지????????
 
                 for (let i = getblockcount + 1; i <= blockcountDm.result; i++) {
                   let options_2 = rpcOptions('getblockhash', i);
-                  
                   callback_2 = (error, response, body) => {
-                    if (!error && response.statusCode == 200) {
-                      let result = JSON.parse(body);
+                    if(!error && response.statusCode == 200) {
+                      let obj = JSON.parse(body);
+                      let result = obj.result;
                       (async () => {
-                        await addHeightDao.addHeight(i, result.result);
+                        await addHeightDao.addHeight(i, result);
                       })();
                       
-                      
+                      // addBlockDao
+                      let options_3 = rpcOptions("getblock", `"${result}"`);
+                      callback_3 = (error, response, body) => {
+                        if(!error && response.statusCode == 200) {
+                          let obj = JSON.parse(body);
+                          let blockInfo = {
+                            merkleroot: obj.result.merkleroot,
+                            time: obj.result.time,
+                            nonce: obj.result.nonce,
+                            previousblockhash: obj.result.previousblockhash,
+                            nextblockhash: obj.result.nextblockhash
+                          }
+                          ;(async () => {
+                            await addBlockDao.addBlock(i, result, blockInfo.merkleroot, blockInfo.time, blockInfo.nonce, blockInfo.previousblockhash, blockInfo.nextblockhash)
+                          })();
+                        } else { console.error("addBlockDao's Error", error) }
+                      };
+
+                      request(options_3, callback_3);
 
                     } else { console.error("addHeightDao's Error", error) };
                   };
