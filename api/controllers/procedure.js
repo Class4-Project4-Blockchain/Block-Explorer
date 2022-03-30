@@ -46,7 +46,12 @@ module.exports = {
               } else {
                 // let i = getblockcount + 1; // ★ 왜 이렇게하면 안되지????????
 
-                for (let i = getblockcount + 1; i <= blockcountDm.result; i++) {
+                for (let i = getblockcount; i <= blockcountDm.result; i++) {
+                  if(i == getblockcount) {
+                    (async () => {
+                      await addBlockDao.delBlock(i);
+                    })();
+                  }
                   let options_2 = rpcOptions('getblockhash', i);
                   callback_2 = (error, response, body) => {
                     if(!error && response.statusCode == 200) {
@@ -68,7 +73,7 @@ module.exports = {
                             previousblockhash: obj.result.previousblockhash,
                             nextblockhash: obj.result.nextblockhash
                           }
-                          ;(async () => {
+                          ;(async () => { // Error: js가 인클루드된 상황에서 처음 열리는 클로저에 문제가 있다면 첫라인에 " ; " 를 사용하면 된다
                             await addBlockDao.addBlock(i, result, blockInfo.merkleroot, blockInfo.time, blockInfo.nonce, blockInfo.previousblockhash, blockInfo.nextblockhash)
                           })();
                         } else { console.error("addBlockDao's Error", error) }
