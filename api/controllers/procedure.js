@@ -1,4 +1,5 @@
 const readHeightDao = require("../models/readHeightDao");
+const readBlockDao = require("../models/readBlockDao");
 const addHeightDao = require("../models/addHeightDao");
 const addBlockDao = require("../models/addBlockDao");
 const request = require("request");
@@ -101,13 +102,7 @@ module.exports = {
 
   getBlockCount: {
     getblockcount: (req, res) => {
-      let dataString = `{"jsonrpc":"1.0","id":"${ID}","method":"getblockcount","params":[]}`;
-      let options = {
-        url: `http://${USER}:${PASS}@${URL}:${PORT}/`,
-        method: "POST",
-        headers: headers,
-        body: dataString,
-      };
+      let options = rpcOptions('getblockcount', "");
 
       callback = (error, response, body) => {
         if (!error && response.statusCode == 200) {
@@ -125,28 +120,45 @@ module.exports = {
   },
 
   getBlockHash: {
-    getblockhash: (req, res) => {
-      let dataString = `{"jsonrpc":"1.0","id":"${ID}","method":"getblockhash","params":[${req.body.search}]}`;
-      let options = {
-        url: `http://${USER}:${PASS}@${URL}:${PORT}/`,
-        method: "POST",
-        headers: headers,
-        body: dataString,
+    getblockhash: async (req, res) => {
+      let result;
+      let box = req.body.searchBox;
+      let blockinfo = {}
+
+      if(box == "height") {
+        try {
+          result = await readBlockDao.readBlock(box, req.body.search);
+        } catch { res.render('getblockerror') };
+
+
+      } else if(box == "blockhash") {
+        result = await readBlockDao.readBlock(box, req.body.search);
+        
+      } else res.render('getblockerror');
+    
+      blockinfo = {
+        height: result[0].height,
+        blockhash: result[0].blockhash,
+        merkleroot: result[0].merkleroot,
+        blocktime: result[0].blocktime,
+        nonce: result[0].nonce,
+        previousblockhash: result[0].previousblockhash,
+        nextblockhash: result[0].nextblockhash
       };
 
-      callback = (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-          const data = JSON.parse(body);
-          console.log(data);
-          res.render("getblockhash_result", {
-            blockinfo: data.result,
-          });
-        } else {
-          console.error("getblockhash's Error => ", error);
-        }
-      };
-
-      request(options, callback);
+      function Unix_timestamp(t){
+        var date = new Date(t*1000);
+        var year = date.getFullYear();
+        var month = "0" + (date.getMonth()+1);
+        var day = "0" + date.getDate();
+        var hour = "0" + date.getHours();
+        var minute = "0" + date.getMinutes();
+        var second = "0" + date.getSeconds();
+        return year + "-" + month.substr(-2) + "-" + day.substr(-2) + " " + hour.substr(-2) + ":" + minute.substr(-2) + ":" + second.substr(-2);
+      }
+    
+      const timeTransfer = Unix_timestamp(blockinfo.blocktime);
+      res.render('getblockhash', {blockinfo, timeTransfer});
     },
   },
 };
