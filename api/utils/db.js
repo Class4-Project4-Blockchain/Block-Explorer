@@ -2,11 +2,11 @@ const mysql = require('mysql');
 require('dotenv').config({ path: __dirname + '/.env' });
 
 const dbConf = {
-    host: process.env.HOST,
+    host: process.env.DB_HOST,
     user: process.env.USERS,
     password: process.env.PASSWORD,
     database: process.env.DB,
-    port: process.env.PORT,
+    port: process.env.DB_PORT,
     commitLimit: process.env.COMMITLIMIT
 }
 

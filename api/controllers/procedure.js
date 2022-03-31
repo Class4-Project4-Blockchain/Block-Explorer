@@ -26,6 +26,7 @@ const rpcOptions = (method, params) => {
 module.exports = {
   getBlockDao: {
     blockcheck: (req, res) => {
+      res.render('index');
       (() => {
         let options = rpcOptions('getblockcount', '');
 
@@ -121,18 +122,30 @@ module.exports = {
 
   getBlockHash: {
     getblockhash: async (req, res) => {
-      let result;
       let box = req.body.searchBox;
+      let search = req.body.search
       let blockinfo = {}
-
+      let result;
+      
       if(box == "height") {
-        try {
-          result = await readBlockDao.readBlock(box, req.body.search);
-        } catch { res.render('getblockerror') };
-
-
-      } else if(box == "blockhash") {
-        result = await readBlockDao.readBlock(box, req.body.search);
+          result = await readBlockDao.readBlock(box, search);
+          if(search != Number) {
+            return res.send(
+              `<script>
+                alert('올바른 height 값이 아닙니다');
+                location.href='/';
+              </script>`
+            );
+          }
+          if(result[0] == undefined) {
+            return res.render('getblockerror');
+          }
+          
+        } else if(box == "blockhash") {
+          result = await readBlockDao.readBlock(box, search);
+          if(result[0] == undefined) {
+            return res.render('getblockerror');
+          }
         
       } else res.render('getblockerror');
     

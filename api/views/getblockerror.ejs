@@ -1,5 +1,11 @@
 <%-include('./includes/header.ejs')%>
-<body>
-    <div>요청하신 정보를 찾을 수 없습니다.</div>
-</body>
+<section class="errorBox">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">요청하신 Block 정보를 찾을 수 없습니다.</h5>
+            <p class="card-text">검색하는 조건(height, blockhash) 또는 입력값을 다시 확인 바랍니다.</p>
+            <a href="/" class="btn btn-primary">Re-search</a>
+        </div>
+    </div>
+</section>
 <%-include('./includes/footer.ejs')%>

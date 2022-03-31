@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mainPage = require('./routes');
-const getBlockData = require('./routes/getblockdata');
 const getBlockCount = require('./routes/getblockcount');
 const getBlockHash = require('./routes/getblockhash');
 
@@ -14,12 +13,12 @@ app.set('views', './views');
 app.use(express.static(__dirname + '/views'));
 
 app.use('/', mainPage);
-app.use('/getblockdata', getBlockData);
 app.use('/getblockcount', getBlockCount);
 app.use('/getblockhash', getBlockHash);
 
-const host = 'localhost';
-const port = 3000;
+require('dotenv').config({ path: __dirname + './utils/.env' });
+const host = process.env.SV_HOST;
+const port = process.env.SV_PORT;
 
 
-app.listen(port, () => {console.log(`Server is running at http://${host}:${port}`)});
+app.listen(port, host, () => {console.log(`Server is running at http://${host}:${port}`)});
