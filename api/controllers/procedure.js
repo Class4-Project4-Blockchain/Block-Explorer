@@ -3,7 +3,7 @@ const readBlockDao = require("../models/readBlockDao");
 const addHeightDao = require("../models/addHeightDao");
 const addBlockDao = require("../models/addBlockDao");
 const request = require("request");
-require("dotenv").config({ path: __dirname + "/.env" });
+require("dotenv").config({ path: __dirname + "./utils/.env" });
 
 const USER = process.env.RPC_USER;
 const PASS = process.env.RPC_PASS;
@@ -127,28 +127,43 @@ module.exports = {
       let blockinfo = {}
       let result;
       
-      if(box == "height") {
-          result = await readBlockDao.readBlock(box, search);
-          if(search != Number) {
-            return res.send(
-              `<script>
-                alert('올바른 height 값이 아닙니다');
-                location.href='/';
-              </script>`
-            );
-          }
-          if(result[0] == undefined) {
-            return res.render('getblockerror');
-          }
-          
-        } else if(box == "blockhash") {
-          result = await readBlockDao.readBlock(box, search);
-          if(result[0] == undefined) {
-            return res.render('getblockerror');
-          }
-        
-      } else res.render('getblockerror');
-    
+      if (box == "height") {
+        if (search.length == 0) {
+          return res.send(
+            `<script>
+              alert('height값을 입력 해주세요');
+              location.href='/';
+            </script>`
+          );
+        }
+
+        if (isNaN(search) == true) {
+          return res.send(
+            `<script>
+            alert('올바른 height값(숫자)을 입력 해주세요');
+            location.href='/';
+          </script>`
+          );
+        }
+        result = await readBlockDao.readBlock(box, search);
+        if(result[0] == undefined) return res.render('getblockerror');
+      }
+      
+      else if (box == "blockhash") {
+        if (search.length < 64) {
+          return res.send(
+            `<script>
+              alert('올바른 blockhash 형태가 아닙니다');
+              location.href='/';
+            </script>`
+          );
+        }
+        result = await readBlockDao.readBlock(box, search);
+        if (result[0] == undefined) return res.render('getblockerror');
+      }
+      
+      else res.render('getblockerror');
+      
       blockinfo = {
         height: result[0].height,
         blockhash: result[0].blockhash,
