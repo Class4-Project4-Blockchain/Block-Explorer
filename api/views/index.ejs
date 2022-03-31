@@ -7,38 +7,18 @@
                         <div class="text-center text-white">
                             <!-- Page heading-->
                             <h1 class="mb-5">원하는 블록을 검색해보세요!</h1>
-                            <!-- Signup form-->
-                            <!-- * * * * * * * * * * * * * * *-->
-                            <!-- * * SB Forms Contact Form * *-->
-                            <!-- * * * * * * * * * * * * * * *-->
-                            <!-- This form is pre-integrated with SB Forms.-->
-                            <!-- To make this form functional, sign up at-->
-                            <!-- https://startbootstrap.com/solution/contact-forms-->
-                            <!-- to get an API token!-->
-                            <form class="form-subscribe" id="contactForm" data-sb-form-api-token="API_TOKEN">
-                                <!-- Email address input-->
+                            <form class="form-subscribe" id="contactForm" data-sb-form-api-token="API_TOKEN" action="/getblockhash" method="POST">
+                                <select name="searchBox" class="form-select" aria-label="Default select example">
+                                    <option value="height">height</option>
+                                    <option value="blockhash">blockhash</option>
+                                </select>
+                                <br>
                                 <div class="row">
                                     <div class="col">
-                                        <input class="form-control form-control-lg" id="emailAddress" type="text" placeholder="Enter the block info you wanted" data-sb-validations="required,email" />
+                                        <input name="search" class="form-control form-control-lg" id="emailAddress" type="text" placeholder="Enter the block info you wanted" data-sb-validations="required,email"/>
                                     </div>
-                                    <div class="col-auto"><button class="btn btn-primary btn-lg disabled" id="submitButton" type="submit">Search</button></div>
+                                    <div class="col-auto"><button class="btn btn-primary btn-lg" type="submit">Search</button></div>
                                 </div>
-                                <!-- Submit success message-->
-                                <!---->
-                                <!-- This is what your users will see when the form-->
-                                <!-- has successfully submitted-->
-                                <div class="d-none" id="submitSuccessMessage">
-                                    <div class="text-center mb-3">
-                                        <div class="fw-bolder">Form submission successful!</div>
-                                        <p>To activate this form, sign up at</p>
-                                        <a class="text-white" href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
-                                    </div>
-                                </div>
-                                <!-- Submit error message-->
-                                <!---->
-                                <!-- This is what your users will see when there is-->
-                                <!-- an error submitting the form-->
-                                <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
                             </form>
                         </div>
                     </div>
