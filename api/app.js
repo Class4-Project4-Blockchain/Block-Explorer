@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({ extended:true }));
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
+app.use(express.static(__dirname + '/views'));
 
 app.use('/', mainPage);
 app.use('/getblockdata', getBlockData);

@@ -149,23 +149,6 @@ module.exports = {
       request(options, callback);
     },
   },
-
-
-  rpcOptionsTest: {
-    test: (req, res) => {
-      let options = rpcOptions('getblockcount', '');
-      callback = (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-          const data = JSON.parse(body);
-          console.log(data);
-        } else {
-          console.error("test's Error => ", error);
-        }
-      };
-
-      request(options, callback);
-    }
-  }
 };
 
 // AWS : curl --user whkwon:1234 --data-binary '{"jsonrpc": "1.0", "method":"getblockcount", "params": [] }' -H 'content-type: text/plain;' http://3.35.141.239:9990/
