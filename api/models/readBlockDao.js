@@ -4,7 +4,7 @@ exports.readBlock = (attr, value) => {
   return new Promise((resolve, reject) => {
     getConn((conn) => {
       try {
-        let sQuery = `SELECT * FROM getblock WHERE ${attr}="${value}"`;
+        let sQuery = `SELECT * FROM getblock WHERE ${attr}='${value}'`;
         conn.query(sQuery, (err, result) => {
           resolve(result);
         });

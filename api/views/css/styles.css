@@ -11381,6 +11381,7 @@ footer.footer {
   padding-bottom: 4rem;
 }
 
+/* whkwon_추가 CSS */
 .nav-bono {
   height: 60px;
   float: left;
@@ -11411,4 +11412,8 @@ footer.footer {
 .tr2 {
   background-color: mintcream;
   padding: 10px 0;
+}
+
+.errorBox {
+  margin: 200px 110px;
 }
