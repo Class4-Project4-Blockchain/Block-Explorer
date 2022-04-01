@@ -1,0 +1,37 @@
+<%-include('./includes/header.ejs')%>
+
+<section class="blocktable">
+    <div style="font-size: 30px;">Block <%=blockinfo.height%></div>
+    <div style="font-size: 20px;">이 블록은 한국 시간 기준 <%=timeTransfer%> 에 채굴 되었습니다</div>
+    <div class="tr1 row">
+        <div class="col-3">height</div>
+        <div class="col-6"><%=blockinfo.height%></div>
+    </div>
+    <div class="tr2 row">
+        <div class="col-3">blockhash</div>
+        <div class="col-6"><%=blockinfo.blockhash%></div>
+    </div>
+    <div class="tr1 row">
+        <div class="col-3">merkleroot</div>
+        <div class="col-6"><%=blockinfo.merkleroot%></div>
+    </div>
+    <div class="tr2 row">
+        <div class="col-3">blocktime</div>
+        <div class="col-6"><%=blockinfo.blocktime%></div>
+    </div>
+    <div class="tr1 row">
+        <div class="col-3">nonce</div>
+        <div class="col-6"><%=blockinfo.nonce%></div>
+    </div>
+    <div class="tr2 row">
+        <div class="col-3">previousblockhash</div>
+        <div class="col-6"><%=blockinfo.previousblockhash%></div>
+    </div>
+    <div class="tr1 row">
+        <div class="col-3">nextblockhash</div>
+        <div class="col-6"><%=blockinfo.nextblockhash%></div>
+    </div>
+    <a href="/" class="btn btn-primary">Re-search</a>
+</section>
+
+<%-include('./includes/footer.ejs')%>
